@@ -18,8 +18,8 @@ const PORT = process.env.API_PORT
 const emailTransporter = nodemailer.createTransport({
    service: 'gmail',
    auth: {
-     user: 'bmrakesh04@gmail.com',
-     pass: 'bm7795216932',
+     user: 'bmrakesh7@gmail.com',
+     pass: 'fidp nlmq cuib fasy',
    },
  });
 
