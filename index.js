@@ -34,7 +34,7 @@ const emailTransporter = nodemailer.createTransport({
    }
  
    try {
-     // Verify the token and extract user data
+    
      const userData = jwt.verify(token, process.env.TOKEN_KEY);
      req.user = userData;
      next();
@@ -143,7 +143,7 @@ app.post('/forgot-password', formidable(), async function(req,res){
 
 
 
- app.get('/reset-password/:token', (req, res) => {
+ app.get('/reset-password/:token',formidable(),async function(req,res) {
    const { token } = req.params;
  
   
@@ -154,6 +154,35 @@ app.post('/forgot-password', formidable(), async function(req,res){
  });
 
 
+
+
+ app.post('/reset-password/:token',formidable(), async function(req,res) {
+   const { token } = req.params;
+   let{password}=req.fields
+ 
+   // Check if the reset token is valid
+   if (!resetTokens[token]) {
+     return res.status(400).json({ error: 'Invalid reset token' });
+   }
+ 
+   // Find the user associated with the reset token
+   const user = User.findOne((u) => u.email === resetTokens[token]);
+ 
+   if (!user) {
+     return res.status(404).json({ error: 'User not found' });
+   }
+ 
+   // Hash the new password
+   const hashedPassword = await bcrypt.hash(password, 10);
+ 
+   // Update user password
+   user.password = hashedPassword;
+ 
+   // Remove the reset token from the tokens list
+   delete resetTokens[token];
+ 
+   res.status(200).json({ message: 'Password reset successful' });
+ });
 
 
 
