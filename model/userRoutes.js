@@ -1,16 +1,12 @@
-require("dotenv").config()
-const express = require('express')
+const express = require('express');
 const formidable = require('express-formidable')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto')
 const nodemailer = require('nodemailer');
-require('./config/database').connect()
-const User=require('./model/user')
-
-
-const app=express()
-const PORT = process.env.API_PORT
+require('../config/database').connect()
+const User=require('./userModel')
+const router = express.Router();
 
 
 
@@ -24,7 +20,7 @@ const emailTransporter = nodemailer.createTransport({
  });
 
 
- const resetTokens = {};
+ const resetToken = {};
 
  const authenticateUser = (req, res, next) => {
    const token = req.headers.authorization;
@@ -48,7 +44,7 @@ const emailTransporter = nodemailer.createTransport({
 
 
 
-app.post('/register', formidable(), async function(req,res){
+router.post('/register', formidable(), async function(req,res){
 
      let{email, password, usertype}=req.fields
 
@@ -83,7 +79,7 @@ app.post('/register', formidable(), async function(req,res){
 
 
 
-app.post('/login', formidable(), async function(req,res){
+router.post('/login', formidable(), async function(req,res){
 
    let{email, password}=req.fields
 
@@ -108,7 +104,7 @@ app.post('/login', formidable(), async function(req,res){
 
 
 
-app.post('/forgot-password', formidable(), async function(req,res){
+router.post('/forgot-password', formidable(), async function(req,res){
    let{email}=req.fields
  
    const user1 = await User.findOne({ email });
@@ -143,11 +139,11 @@ app.post('/forgot-password', formidable(), async function(req,res){
 
 
 
- app.get('/reset-password/:token',formidable(),async function(req,res) {
+ router.get('/reset-password/:token',formidable(),async function(req,res) {
    const { token } = req.params;
  
   
-   if (!resetTokens[token]) {
+   if (!resetToken[token]) {
      return res.status(400).json({ error: 'Invalid reset token' });
    }
  res.redirect(`http://localhost:3001/reset-password?token=${token}`);
@@ -156,17 +152,17 @@ app.post('/forgot-password', formidable(), async function(req,res){
 
 
 
- app.post('/reset-password/:token',formidable(), async function(req,res) {
+ router.post('/reset-password/:token',formidable(), async function(req,res) {
    const { token } = req.params;
-   let{password}=req.fields
+   let{ password}=req.fields
  
    // Check if the reset token is valid
-   if (!resetTokens[token]) {
+   if (!resetToken[token]) {
      return res.status(400).json({ error: 'Invalid reset token' });
    }
  
    // Find the user associated with the reset token
-   const user = User.findOne((u) => u.email === resetTokens[token]);
+   const user = User.findOne((u) => u.email === resetToken[token]);
  
    if (!user) {
      return res.status(404).json({ error: 'User not found' });
@@ -179,11 +175,12 @@ app.post('/forgot-password', formidable(), async function(req,res){
    user.password = hashedPassword;
  
    // Remove the reset token from the tokens list
-   delete resetTokens[token];
+   delete resetToken[token];
  
    res.status(200).json({ message: 'Password reset successful' });
  });
 
+ module.exports = router;
 
 
 
@@ -192,5 +189,3 @@ app.post('/forgot-password', formidable(), async function(req,res){
 
 
 
-
-app.listen(PORT, ()=> console.log(`Project is running at ${PORT} port`))
