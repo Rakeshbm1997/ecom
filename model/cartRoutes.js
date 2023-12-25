@@ -33,7 +33,7 @@ router.get('/:cartId', async (req, res) => {
 
 // Create a new cart
 router.post('/', async (req, res) => {
-  const { user, products } = req.body;
+  const { user, products } = req.fields;
   try {
     const newCart = new Cart({ user, products });
     await newCart.save();
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
 // Update a cart by ID
 router.put('/:cartId', async (req, res) => {
   const cartId = req.params.cartId;
-  const { user, products } = req.body;
+  const { user, products } = req.fields;
   try {
     const updatedCart = await Cart.findByIdAndUpdate(cartId, { user, products }, { new: true }).populate('user').populate('products.product');
     if (!updatedCart) {

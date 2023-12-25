@@ -9,7 +9,7 @@ const Vendor=require('./vendormodel')
 
 router.get('/', async (req, res) => {
   try {
-    const vendors = await Vendor.findOne().populate('products');
+    const vendors = await Vendor.findOne().populate('product');
     res.json(vendors);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 router.get('/:vendorId', async (req, res) => {
   const vendorId = req.params.vendorId;
   try {
-    const vendor = await Vendor.findById(vendorId).populate('products');
+    const vendor = await Vendor.findById(vendorId).populate('product');
     if (!vendor) {
       res.status(404).json({ error: 'Vendor not found' });
     } else {
@@ -33,9 +33,9 @@ router.get('/:vendorId', async (req, res) => {
 
 // Create a new vendor
 router.post('/', async (req, res) => {
-  const { name, products } = req.body;
+  const { name, product } = req.fields;
   try {
-    const newVendor = new Vendor({ name, products });
+    const newVendor = new Vendor({ name, product });
     await newVendor.save();
     res.status(201).json(newVendor);
   } catch (error) {
@@ -46,9 +46,9 @@ router.post('/', async (req, res) => {
 // Update a vendor by ID
 router.put('/:vendorId', async (req, res) => {
   const vendorId = req.params.vendorId;
-  const { name, products } = req.body;
+  const { name, product } = req.fields;
   try {
-    const updatedVendor = await Vendor.findByIdAndUpdate(vendorId, { name, products }, { new: true }).populate('products');
+    const updatedVendor = await Vendor.findByIdAndUpdate(vendorId, { name, product }, { new: true }).populate('product');
     if (!updatedVendor) {
       res.status(404).json({ error: 'Vendor not found' });
     } else {
@@ -63,7 +63,7 @@ router.put('/:vendorId', async (req, res) => {
 router.delete('/:vendorId', async (req, res) => {
   const vendorId = req.params.vendorId;
   try {
-    const deletedVendor = await Vendor.findByIdAndRemove(vendorId).populate('products');
+    const deletedVendor = await Vendor.findByIdAndRemove(vendorId).populate('product');
     if (!deletedVendor) {
       res.status(404).json({ error: 'Vendor not found' });
     } else {
