@@ -1,4 +1,3 @@
-// buyer.js
 
 const express = require('express');
 require('../config/database').connect()
@@ -31,7 +30,7 @@ router.get('/:buyerId', async (req, res) => {
 
 // Create a new buyer
 router.post('/', async (req, res) => {
-  const { name, cart } = req.fields;
+  const { name, cart } = req.body;
   try {
     const newBuyer = new Buyer({ name, cart });
     await newBuyer.save();
@@ -44,7 +43,7 @@ router.post('/', async (req, res) => {
 // Update a buyer by ID
 router.put('/:buyerId', async (req, res) => {
   const buyerId = req.params.buyerId;
-  const { name, cart } = req.fields;
+  const { name, cart } = req.body;
   try {
     const updatedBuyer = await Buyer.findByIdAndUpdate(buyerId, { name, cart }, { new: true }).populate('cart');
     if (!updatedBuyer) {

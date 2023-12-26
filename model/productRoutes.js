@@ -1,7 +1,5 @@
-// productRoutes.js
 
 const express = require('express');
-const formidable = require('express-formidable')
 require('../config/database').connect()
 const router = express.Router();
 const Product=require('./productmodel')
@@ -10,7 +8,7 @@ const Product=require('./productmodel')
 
 
 // Route to get all products
-router.get('/', formidable(), async (req, res) => {
+router.get('/',  async (req, res) => {
   try {
     const products = await Product.findOne();
     res.json(products);
@@ -20,7 +18,7 @@ router.get('/', formidable(), async (req, res) => {
 });
 
 // Route to get a specific product by ID
-router.get('/:productId',formidable(), async (req, res) => {
+router.get('/:productId', async (req, res) => {
   const productId = req.params.productId;
 
   try {
@@ -35,7 +33,7 @@ router.get('/:productId',formidable(), async (req, res) => {
 });
 
 // Route to create a new product
-router.post('/', formidable(),async (req, res) => {
+router.post('/', async (req, res) => {
   const { title, price, description } = req.fields;
 
   try {
@@ -49,7 +47,7 @@ router.post('/', formidable(),async (req, res) => {
 });
 
 // Route to update a product by ID
-router.put('/:productId',formidable(), async (req, res) => {
+router.put('/:productId', async (req, res) => {
   const productId = req.params.productId;
   const { title, price, description } = req.fields;
 
@@ -71,7 +69,7 @@ router.put('/:productId',formidable(), async (req, res) => {
 });
 
 // Route to delete a product by ID
-router.delete('/:productId',formidable(), async (req, res) => {
+router.delete('/:productId', async (req, res) => {
   const productId = req.params.productId;
 
   try {

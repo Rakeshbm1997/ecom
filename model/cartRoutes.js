@@ -1,4 +1,3 @@
-// cart.js
 
 const express = require('express');
 const router = express.Router();
@@ -9,7 +8,7 @@ const Cart=require('./cartmodel')
 // Get all carts
 router.get('/', async (req, res) => {
   try {
-    const carts = await Cart.find().populate('user').populate('products.product');
+    const carts = await Cart.findOne().populate('user').populate('products.product');
     res.json(carts);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -33,7 +32,7 @@ router.get('/:cartId', async (req, res) => {
 
 // Create a new cart
 router.post('/', async (req, res) => {
-  const { user, products } = req.fields;
+  const { user, products } = req.body;
   try {
     const newCart = new Cart({ user, products });
     await newCart.save();
@@ -46,7 +45,7 @@ router.post('/', async (req, res) => {
 // Update a cart by ID
 router.put('/:cartId', async (req, res) => {
   const cartId = req.params.cartId;
-  const { user, products } = req.fields;
+  const { user, products } = req.body;
   try {
     const updatedCart = await Cart.findByIdAndUpdate(cartId, { user, products }, { new: true }).populate('user').populate('products.product');
     if (!updatedCart) {

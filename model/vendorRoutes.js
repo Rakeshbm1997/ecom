@@ -1,4 +1,3 @@
-// vendor.js
 
 const express = require('express');
 const router = express.Router();
@@ -33,7 +32,7 @@ router.get('/:vendorId', async (req, res) => {
 
 // Create a new vendor
 router.post('/', async (req, res) => {
-  const { name, product } = req.fields;
+  const { name, product } = req.body;
   try {
     const newVendor = new Vendor({ name, product });
     await newVendor.save();

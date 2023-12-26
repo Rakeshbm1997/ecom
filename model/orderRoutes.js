@@ -1,4 +1,3 @@
-// order.js
 
 const express = require('express');
 const router = express.Router();
@@ -33,7 +32,7 @@ router.get('/:orderId',formidable(), async (req, res) => {
 
 // Create a new order
 router.post('/', async (req, res) => {
-  const { product, quantity } = req.fields;
+  const { product, quantity } = req.body;
   try {
     const newOrder = new Order({ product, quantity });
     await newOrder.save();
@@ -46,7 +45,7 @@ router.post('/', async (req, res) => {
 // Update an order by ID
 router.put('/:orderId',formidable(), async (req, res) => {
   const orderId = req.params.orderId;
-  const { product, quantity } = req.fields;
+  const { product, quantity } = req.body;
   try {
     const updatedOrder = await Order.findByIdAndUpdate(orderId, { product, quantity }, { new: true }).populate('product');
     if (!updatedOrder) {
