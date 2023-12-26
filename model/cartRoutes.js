@@ -42,6 +42,23 @@ router.post('/', async (req, res) => {
   }
 });
 
+//add an item to the cart
+router.post('/addToCart', (req, res) => {
+  const productId = req.body.productId;
+
+  const product = getProductById(productId);
+
+  if (product && product.inventory > 0) {
+    product.inventory--;
+    
+    Cart.push(product);
+    
+    res.json({ message: 'Product added to cart', Cart });
+  } else {
+    res.status(404).json({ message: 'Product not found or out of stock' });
+  }
+});
+
 // Update a cart by ID
 router.put('/:cartId', async (req, res) => {
   const cartId = req.params.cartId;

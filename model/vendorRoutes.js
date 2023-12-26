@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
 // Update a vendor by ID
 router.put('/:vendorId', async (req, res) => {
   const vendorId = req.params.vendorId;
-  const { name, product } = req.fields;
+  const { name, product } = req.body;
   try {
     const updatedVendor = await Vendor.findByIdAndUpdate(vendorId, { name, product }, { new: true }).populate('product');
     if (!updatedVendor) {

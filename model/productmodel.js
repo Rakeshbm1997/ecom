@@ -14,7 +14,7 @@ const productSchema = Schema({
 
   category: { type: String,  required: true,},
   
-  
+  inventory:{type:Number,required:true},
 });
 
 module.exports = mongoose.model("Product", productSchema);
